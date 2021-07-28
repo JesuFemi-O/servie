@@ -14,13 +14,30 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
-from django.urls.conf import include
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="Servie",
+        default_version='v1',
+        description="easily integrate mail and file uploads to your projects",
+        terms_of_service="www.google.com",
+        contact=openapi.Contact(email="ogunwedeemmanuel@gmail.com"),
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', schema_view.with_ui('swagger', cache_timeout=0),
+         name='schema-swagger-ui'),
     path('file-uploads/', include('file_control.urls')),
     path('mails/', include('mails.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
